@@ -1,0 +1,12 @@
+# Blender 3.4.1 MTL File: 'SMALL - 5.blend'
+# www.blender.org
+
+newmtl Material
+Ns 360.000000
+Ka 0.395455 0.395455 0.395455
+Ks 0.500000 0.500000 0.500000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd TEXTURES/SMALL - 5 - DIFFUSE.png
+map_Ke TEXTURES/SMALL - 5 - EMMISION.png
