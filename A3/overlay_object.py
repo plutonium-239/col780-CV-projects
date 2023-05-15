@@ -35,24 +35,44 @@ def find_projection(P_stacked, X_stacked):
 
 	return P
 
-def overlay(obj_fname, img_fnames, all_Hs, X_stacked_imgs2, P_stacked_imgs, use_color=False):
+def overlay(obj_fname, img_fnames, all_Hs, X_stacked_imgs2, P_stacked_imgs, use_color=False, scale=3):
 	# obj = pywavefront.Wavefront(obj_fname)
-	obj = OBJ(obj_fname, swapyz=True)
 	ret, K, _, _, _ = cv2.calibrateCamera(X_stacked_imgs2.astype(np.float32), P_stacked_imgs[:,:,:2].astype(np.float32), (2016, 930), None, None)
+
+	if obj_fname != 'simple':
+		obj = OBJ(obj_fname, swapyz=True)
+	else:
+		obj = np.float32([[0,0,0], [0,3,0], [3,3,0], [3,0,0], [0,0,-3], [0,3,-3], [3,3,-3], [3,0,-3]])
 
 
 	for i in range(len(img_fnames)):
 		img = cv2.imread(img_fnames[i])
 		# K = np.array([[800, 0, 1000], [0, 800, 350], [0, 0, 1]])
-		P = projection_matrix(K, all_Hs[i])
 		# print(P)
-		out = render(img, obj, P, color=use_color)
+		if obj_fname != 'simple':
+			P = projection_matrix(K, -all_Hs[i])
+			out = render(img, obj, P, color=use_color, scale=scale)
+		else:
+			P = projection_matrix(K, all_Hs[i])
+			dst = cv2.perspectiveTransform(obj.reshape(-1, 1, 3), P)
+			out = draw(img, dst)
 		cv2.imshow('out', imutils.resize(out, width=800))
 		cv2.waitKey(0)
 
+def draw(img, imgpts):
+	# simple function for drawing imgpts(cube) over image
+	imgpts = imgpts.astype(np.int32).reshape(-1,2)
+	# draw base
+	img = cv2.drawContours(img, [imgpts[:4]],-1,(119,0,255),-3)
+	# draw (vertical) edges
+	for i,j in zip(range(4),range(4,8)):
+		img = cv2.line(img, tuple(imgpts[i]), tuple(imgpts[j]),(230, 54, 168),3)
+	# draw roof
+	img = cv2.drawContours(img, [imgpts[4:]],-1,(230, 225, 54), -3)
+	return img
 
 def projection_matrix(K, H):
-	# homography = -homography
+	H = -H
 	Rt = np.linalg.inv(K)@H # KH = [R|t] = [R1 R2 R3 t]
 	l = np.sqrt(np.linalg.norm(Rt[:, 0], 2)*np.linalg.norm(Rt[:, 1], 2))
 	R1 = Rt[:, 0]/l
@@ -69,13 +89,13 @@ def projection_matrix(K, H):
 	P = np.stack((R1, R2, R3, t)).T
 	return K @ P
 
-def render(img, obj, projection, color=False):
+def render(img, obj, projection, scale, color=False):
 	'''
 	Adapted from Bites of Code blog, this simply renders a 3d obj on a 2d image given the projection matrix. 
 	'''
 	vertices = np.array(obj.vertices)
 	H,W = img.shape[:2]
-	vertices = 3*(vertices - vertices.min())/(vertices.max() - vertices.min())
+	vertices = scale*(vertices - vertices.min())/(vertices.max() - vertices.min())
 	h, w = 0,0
 	i = 0
 	for face in obj.faces:

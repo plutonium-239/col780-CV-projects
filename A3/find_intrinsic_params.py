@@ -95,6 +95,7 @@ def find_K_from_Hs_2(all_Hs):
 	b = N_T[-1]
 	print(N_T)
 	# print(V@b)
+	# print(b)
 
 	K = np.zeros((3,3))
 	K[0,0] = 1/np.sqrt(b[0])

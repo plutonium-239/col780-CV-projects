@@ -9,7 +9,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--color', action='store_true', default=False, help="To give colors to faces")
-parser.add_argument('--model', type=int, default=-1, help="Which model to show: -1=None 0=Prism 1=Cybertruck 2=Building 3=Katana")
+parser.add_argument('--model', type=int, default=-1, help="Which model to show: -1=Simple Cube (default) 0=Prism 1=Cybertruck 2=Building 3=Katana")
+parser.add_argument('--scale', type=float, default=3, help="Scale of model (default=3)")
 args = parser.parse_args()
 
 get_xy = lambda s: list(map(float, s.split(",")))
@@ -58,11 +59,13 @@ print('K', K)
 # 	cv2.waitKey(0)
 
 model_names = {
+	-1: 'simple',
 	0: '3dmodels/Triangular_Prism/20255_Triangular_Prism_V1.obj',
 	1: '3dmodels/cybertruck/Tesla Cybertruck.obj',
 	2: '3dmodels/building/Building - 6.obj',
 	3: '3dmodels/katana/CYBERPUNK KATANA.obj'
 } 
 
-if args.model > -1:
-	overlay(model_names[args.model], all_images[:num_images], all_Hs, X_stacked_imgs2, P_stacked_imgs, args.color)
+# if args.model > -1:
+_, all_Hs = find_intrinsic_matrix(P_stacked_imgs[:num_images,:,:], X_stacked_imgs[:num_images,:,:])
+overlay(model_names[args.model], all_images[:num_images], all_Hs, X_stacked_imgs2, P_stacked_imgs, args.color, scale=args.scale)

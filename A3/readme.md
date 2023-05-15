@@ -156,7 +156,19 @@ Now that we have the pixel coordinates, we can simply fill the pixels with the c
 
 ### Results
 
-*I was not able to get loading of the texture file working, so the color functionality does not work. However, there is enough detail in the images to tell that the code is working and the objects are situated on the plane.*
+*I was not able to get loading of textures for 3D models working, so the color functionality does not work for loaded models. However, there is enough detail in the images to tell that the code is working and the objects are situated on the plane.*
+
+**Simple Cube**
+
+Blue plane is the roof and pink plane is the base. It is positioned at the corner from where (0,0) was measured on the chessboard. This works very well. This example idea (of just taking 8 points of a cube and transforming them) is available on OpenCV[^3].
+
+![image-20230407173226027](https://i.ibb.co/4S8rtng/image-20230407173226027.png)
+
+![image-20230407172817597](https://i.ibb.co/hB7kHzZ/image-20230407172817597.png)
+
+![image-20230407172851277](https://i.ibb.co/TRy03s2/image-20230407172851277.png)
+
+![image-20230407172900478](https://i.ibb.co/QFQsb06/image-20230407172900478.png)
 
 **Simple Prism**
 
@@ -198,7 +210,8 @@ usage: main.py [-h] [--color] [--model MODEL]
 optional arguments:
   -h, --help     show this help message and exit
   --color        To give colors to faces
-  --model MODEL  Which model to show: -1=None 0=Prism 1=Cybertruck 2=Building 3=Katana
+  --model MODEL  Which model to show: -1=Simple Cube (default) 0=Prism 1=Cybertruck 2=Building 3=Katana
+  --scale SCALE  Scale of model (default=3)
 ```
 
 `main.py` contains the driver code to run everything.
@@ -209,3 +222,4 @@ optional arguments:
 
 [^1]: https://www.camerafv5.com/devices/manufacturers/samsung/sm-a505g_a50_0/
 [^2]: https://learnopencv.com/approximate-focal-length-for-webcams-and-cell-phone-cameras/
+[^3]: https://docs.opencv.org/3.4/d7/d53/tutorial_py_pose.html
