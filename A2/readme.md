@@ -9,7 +9,7 @@
 I have implemented a Harris Corner Detector to detect object corners from different scenes of an image so that we can stitch them afterwards to make a panorama, using an affine model.
 
 Harris Corner Detection works on the following principles: 
-$$
+```math
 \begin{align}
 M &= \sum_{x,y}{G(x,y)\begin{bmatrix}I_x^2 & I_xI_y\\ I_xI_y & I_y^2\end{bmatrix}} \\
 &\ where,\ I_x = \frac{\delta I}{\delta x}\ and\ I_y = \frac{\delta I}{\delta y} \\
@@ -17,7 +17,7 @@ H &= \mathbf{det}(M) - k\cdot\mathbf{tr}(M)^2 &&= \lambda_1\cdot\lambda_2 - k\cd
 &or\\
 H &= \frac{\mathbf{det}(M)}{\mathbf{tr}(M)} &&= \frac{\lambda_1\cdot\lambda_2}{\lambda_1 + \lambda_2}\\
 \end{align}
-$$
+```
 Here, $H$ is the "Harris Corner Matrix", which tells us whether the point is an edge, corner or a flat region based on the eigenvectors.
 $G$ can be chosen to be a gaussian window or a uniform weight window around the point $(x,y)$. Eqn. 4 was the original one from Harris' paper, eqn 5 was given a few years later. However, the original one worked better for me in practice.
 
